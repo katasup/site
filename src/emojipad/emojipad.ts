@@ -11,11 +11,17 @@ interface Layer {
   };
 }
 
+class NullContextError extends Error {
+  constructor() {
+    super('canvas.getContext("2d") returns null value');
+  }
+}
+
 export class EmojiPad {
   static emojisRaw = '😀 😃 😄 😁 😆 😅 😂 🤣 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🤩 🥳 😏 😒 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾 🧠 🦷 🦴 👀 👁 👅 👄 🧙 🧚 🧛 🧜 🧞 🧟 🐶 🐱 🐭 🐹 🐰 🦊 🐻 🐼 🐨 🐯 🦁 🐮 🐷 🐽 🐸 🐵 🙈 🙉 🙊 🐒 🐔 🐧 🐦 🐤 🐣 🐥 🦆 🦅 🦉 🦇 🐺 🐗 🐴 🦄 🐝 🐛 🦋 🐌 🐞 🐜 🦟 🦗 🕷 🕸 🦂 🐢 🐍 🦎 🦖 🦕 🐙 🦑 🦐 🦞 🦀 🐡 🐠 🐟 🐬 🐳 🐋 🦈 🐊 🐅 🐆 🦓 🦍 🦧 🐘 🦛 🦏 🐪 🐫 🦒 🦘 🐃 🐂 🐄 🐎 🐖 🐏 🐑 🦙 🐐 🦌 🐕 🐩 🦮 🐕‍🦺 🐈 🐓 🦃 🦚 🦜 🦢 🦩 🕊 🐇 🦝 🦨 🦡 🦦 🦥 🐁 🐀 🐿 🦔 🐲 🌵 🍁 🍄 🐚 🌞 🌝 🌛 🌜 🌚 🌕 🌎 🔥 ❄️ 🍏 🍎 🍐 🍊 🍋 🍌 🍉 🍇 🍓 🍈 🍒 🍑 🥭 🍍 🥥 🥝 🍅 🍆 🥑 🥦 🥬 🥒 🌶 🌽 🥕 🧄 🧅 🥔 🍠 🥐 🥯 🍞 🥖 🥨 🧀 🥚 🍳 🧈 🥞 🧇 🥓 🥩 🍗 🍖 🦴 🌭 🍔 🍟 🍕 🥪 🥙 🧆 🌮 🌯 🥗 🥘 🥫 🍝 🍜 🍲 🍛 🍣 🍱 🥟 🦪 🍤 🍙 🍚 🍘 🍥 🥠 🥮 🍢 🍡 🍧 🍨 🍦 🥧 🧁 🍰 🎂 🍮 🍭 🍬 🍫 🍿 🍩 🍪 🌰 🥜 ⚽️ 🏀 🏈 ⚾️ 🥎 🎾 🏐 🏉 🥏 🎱';
   static emojis = EmojiPad.emojisRaw.split(' ');
 
-  usedIndexes = [];
+  usedIndexes: number[] = [];
 
   ratio: number;
   length: number;
@@ -35,24 +41,33 @@ export class EmojiPad {
     this.width = container.clientWidth * this.ratio;
     this.height = container.clientHeight * this.ratio;
 
-    this.emojiSize = this.width / 20;
+    this.emojiSize = Math.min(this.height, this.width) / 10;
 
     const canvas = document.createElement('canvas');
 
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
     canvas.style.width = container.clientWidth + 'px';
     canvas.style.height = container.clientHeight + 'px';
     canvas.width = this.width;
     canvas.height = this.height;
 
-    container.appendChild(canvas);
+    container.prepend(canvas);
 
-    this.ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) {
+      throw new NullContextError();
+    }
+
+    this.ctx = ctx;
 
     this.fillLayers();
     this.render();
   }
 
-  randomEmoji() {
+  randomEmoji(): string {
     const index = Math.floor(EmojiPad.emojis.length * Math.random());
 
     if (this.usedIndexes.indexOf(index) >= 0) {
@@ -76,6 +91,10 @@ export class EmojiPad {
 
   blur(canvas: HTMLCanvasElement, ratio: number) {
     const ctx = canvas.getContext('2d');
+
+    if (!ctx) {
+      throw new NullContextError();
+    }
 
     ctx.globalAlpha = 1 / (2 * ratio);
 
@@ -101,6 +120,11 @@ export class EmojiPad {
       canvas.height = this.emojiSize + blur * 2 * 1.1;
 
       const ctx = canvas.getContext('2d');
+
+      if (!ctx) {
+        throw new NullContextError();
+      }
+
       ctx.font = `${this.emojiSize}px serif`;
       ctx.fillText(content, blur, this.emojiSize / 1.1);
 

@@ -35,7 +35,7 @@ function applyTemplate(content, template) {
   const contentHTML = md.render(content);
   const templateDOM = new JSDOM(template);
 
-  templateDOM.window.document.querySelector('.main').innerHTML = contentHTML;
+  templateDOM.window.document.querySelector('article').innerHTML = contentHTML;
 
   const title = templateDOM.window.document.querySelector('title').textContent;
   templateDOM.window.document.querySelector('title').textContent = title;

@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
+
+@import '_variables';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'PT Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-kerning: normal;
+  line-height: 1.5;
+  color: #252525;
+  word-wrap: break-word;
+}
+
+ol, ul {
+  padding: 0;
+  list-style-position: inside;
+}
+
+li {
+  padding-top: 12px;
+}
+
+p {
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.3em;
+}
+
+h3 {
+  font-size: 1.1em;
+}
+
+:matches(h1, h2, h3, h4, h5, h6) + :matches(h1, h2, h3, h4, h5, h6) {
+  margin-top: -1em;
+}
+
+sup {
+  font-size: 0.6em;
+}
+
+a {
+  color: blueviolet;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid salmon;
+  background: transparent;
+}
+
+pre {
+  display: block;
+  overflow: auto;
+  padding: 8px;
+  background-color: #fef5f4;
+  border-radius: 4px;
+  font-size: .9em;
+}
+
+code {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: .9em;
+  color: salmon;
+  background-color: #fef5f4;
+}
+
+em {
+  font-style: italic;
+  color: #757575;
+}

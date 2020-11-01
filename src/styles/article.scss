@@ -1,0 +1,56 @@
+@import "prismjs/themes/prism.css";
+@import "_global";
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header {
+  height: 200px;
+  background-color: blueviolet;
+}
+
+.header__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  @media screen and (min-width: $tablet) {
+    justify-content: flex-start;
+  }
+}
+
+.title {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-size: 2em;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer {
+  margin-top: 100px;
+  height: 100px;
+  position: relative;
+  text-align: center;
+
+  &::before {
+    content: "✻ ✻ ✻";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: salmon;
+  }
+}
+
+.footer__content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
