@@ -5,6 +5,7 @@ const path = require('path');
 const Prism = require('prismjs');
 const { JSDOM } = require('jsdom');
 const MarkdownIt = require('markdown-it');
+const mdFootnote = require('markdown-it-footnote');
 
 const md = new MarkdownIt({
   html: true,
@@ -14,6 +15,7 @@ const md = new MarkdownIt({
   }
 });
 
+md.use(mdFootnote);
 function collectContent(source, destination, template) {
   getFilesList(source).forEach(name => {
     const content = getFileContent(source, name);

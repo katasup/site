@@ -54,3 +54,11 @@
   justify-content: center;
   height: 100%;
 }
+
+.footnotes {
+  font-size: .8em;
+
+  & .footnote-item {
+    padding-top: 0;
+  }
+}
