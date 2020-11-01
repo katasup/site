@@ -1,9 +1,10 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { HotModuleReplacementPlugin } = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { merge } = require('webpack-merge');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -51,6 +52,17 @@ const common = {
       template: 'src/templates/article.html',
       filename: 'article.html',
       chunks: ['article'],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from:  path.resolve(__dirname, 'public'),
+          to: 'assets',
+          globOptions: {
+            ignore: ['*.DS_Store'],
+          },
+        },
+      ],
     }),
   ],
 };

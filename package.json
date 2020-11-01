@@ -12,6 +12,7 @@
   "devDependencies": {
     "@gerhobbelt/markdown-it-attrs": "^3.0.3-20",
     "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.2.1",
     "css-loader": "^5.0.0",
     "html-webpack-plugin": "^5.0.0-alpha.7",
     "jsdom": "^16.4.0",
