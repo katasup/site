@@ -47,6 +47,7 @@ const common = {
 
     }),
     new HtmlWebpackPlugin({
+      publicPath: '/',
       template: 'src/templates/article.html',
       filename: 'article.html',
       chunks: ['article'],
