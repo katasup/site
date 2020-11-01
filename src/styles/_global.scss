@@ -20,6 +20,10 @@ body {
 
 ol, ul {
   padding: 0;
+}
+
+ol:not([class]),
+ul:not([class]) {
   list-style-position: inside;
 }
 
@@ -61,7 +65,7 @@ sup {
 }
 
 a {
-  color: blueviolet;
+  color: inherit;
 }
 
 hr {
@@ -77,13 +81,17 @@ pre {
   background-color: #fef5f4;
   border-radius: 4px;
   font-size: .9em;
+
+  code {
+    display: block;
+  }
 }
 
 code {
   padding: 2px 4px;
   border-radius: 4px;
   font-size: .9em;
-  color: salmon;
+  color: #dd4a68;
   background-color: #fef5f4;
 }
 
