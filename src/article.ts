@@ -2,8 +2,16 @@ import { EmojiPad } from './emojipad/emojipad';
 
 import './styles/article.scss';
 
-const header = document.querySelector<HTMLElement>('.header');
+document.addEventListener('readystatechange', () => {
+  if (document.readyState === 'complete') {
+    init();
+  }
+});
 
-if (header) {
-  new EmojiPad(header, 10);
+function init() {
+  const header = document.querySelector<HTMLElement>('.header');
+
+  if (header) {
+    new EmojiPad(header, 10);
+  }
 }
