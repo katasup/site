@@ -1,6 +1,6 @@
 # Введение в функциональное программирование
 
-*Это перевод статьи [Mary Rose Cook](https://maryrosecook.com) опубликованной в [Code Words](https://codewords.recurse.com/issues/one/an-introduction-to-functional-programming).*
+*Это перевод статьи [Mary Rose Cook](https://maryrosecook.com){ rel="noopener noreferrer" } опубликованной в [Code Words](https://codewords.recurse.com/issues/one/an-introduction-to-functional-programming){ rel="noopener noreferrer" }.*
 
 Множество статей о функциональном программировании рассказывают об абстрактных функциональных техниках, таких как композиция, конвейеры, функции высшего порядка. Но не эта. Здесь я рассмотрю примеры императивного, не-функционального кода, какой люди пишут каждый день, и переведу их в функциональный стиль.
 

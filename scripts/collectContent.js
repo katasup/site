@@ -6,6 +6,7 @@ const Prism = require('prismjs');
 const { JSDOM } = require('jsdom');
 const MarkdownIt = require('markdown-it');
 const mdFootnote = require('markdown-it-footnote');
+const markdownItAttrs = require('@gerhobbelt/markdown-it-attrs');
 
 const md = new MarkdownIt({
   html: true,
@@ -16,6 +17,8 @@ const md = new MarkdownIt({
 });
 
 md.use(mdFootnote);
+md.use(markdownItAttrs);
+
 function collectContent(source, destination, template) {
   getFilesList(source).forEach(name => {
     const content = getFileContent(source, name);
