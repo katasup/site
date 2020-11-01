@@ -37,7 +37,7 @@ function applyTemplate(content, template) {
 
   templateDOM.window.document.querySelector('article').innerHTML = contentHTML;
 
-  const title = templateDOM.window.document.querySelector('title').textContent;
+  const title = templateDOM.window.document.querySelector('h1').textContent;
   templateDOM.window.document.querySelector('title').textContent = title;
 
   return templateDOM.serialize();
