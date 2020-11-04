@@ -129,10 +129,11 @@ export class EmojiPad {
 
     for await (let [emoji, index] of images) {
       const blur = index < layersAmount / 2 ? 3 : 0;
+      const padding = (blur * this.ratio);
 
       const canvas = document.createElement('canvas');
-      canvas.width = this.emojiSize + blur * 2;
-      canvas.height = this.emojiSize + blur * 2;
+      canvas.width = this.emojiSize + padding * 2;
+      canvas.height = this.emojiSize + padding * 2;
 
       const ctx = canvas.getContext('2d');
 
@@ -140,7 +141,13 @@ export class EmojiPad {
         throw new NullContextError();
       }
 
-      ctx.drawImage(emoji, blur, blur, canvas.width - blur, canvas.height - blur);
+      ctx.drawImage(
+        emoji,
+        padding,
+        padding,
+        this.emojiSize - padding,
+        this.emojiSize - padding
+      );
 
       if (blur) {
         this.blur(canvas, blur);
