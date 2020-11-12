@@ -11,7 +11,11 @@ document.addEventListener('readystatechange', () => {
 function init() {
   const header = document.querySelector<HTMLElement>('.header');
 
-  if (header) {
-    new EmojiPad(header, 10);
+  if (!header) {
+    return;
   }
+
+  const emojipad = new EmojiPad(header, 50);
+
+  window.addEventListener('resize', emojipad.handleResize);
 }

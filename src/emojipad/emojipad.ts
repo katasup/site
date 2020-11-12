@@ -31,6 +31,9 @@ export class EmojiPad {
   emojiSize: number;
 
   layers: Layer[] = [];
+
+  private resizeTimer?: number;
+
   constructor(public container: HTMLElement, public layersAmount = 99) {
     this.ratio = window.devicePixelRatio || 1;
 
@@ -63,6 +66,19 @@ export class EmojiPad {
 
     this.render();
   }
+
+  handleResize = () => {
+    window.clearTimeout(this.resizeTimer);
+
+    this.resizeTimer = window.setTimeout(() => {
+      this.width = this.container.clientWidth * this.ratio;
+      this.height = this.container.clientHeight * this.ratio;
+
+      this.ctx.canvas.style.width = this.container.clientWidth + 'px';
+      this.ctx.canvas.style.height = this.container.clientHeight + 'px';
+      this.ctx.canvas.width = this.width;
+      this.ctx.canvas.height = this.height;
+    }, 500);
   }
 
   randomEmoji(): string {
