@@ -22,20 +22,17 @@ export class EmojiPad {
 
   usedIndexes: number[] = [];
 
-  ratio: number;
-  length: number;
-
-  layers: Layer[] = [];
   ctx: CanvasRenderingContext2D;
 
   width: number;
   height: number;
 
+  ratio: number;
   emojiSize: number;
 
-  constructor(container: HTMLElement, length = 99) {
+  layers: Layer[] = [];
+  constructor(public container: HTMLElement, public layersAmount = 99) {
     this.ratio = window.devicePixelRatio || 1;
-    this.length = length;
 
     this.width = container.clientWidth * this.ratio;
     this.height = container.clientHeight * this.ratio;
@@ -62,11 +59,10 @@ export class EmojiPad {
 
     this.ctx = ctx;
 
-    this.fillLayers().then(layers => {
-      this.layers = layers;
+    this.fillLayers();
 
-      this.render();
-    });
+    this.render();
+  }
   }
 
   randomEmoji(): string {
@@ -118,59 +114,56 @@ export class EmojiPad {
     });
   }
 
-  async fillLayers() {
-    const layersAmount = 99;
+  fillLayers() {
+    for (let i = this.layersAmount; i > 0; i--) {
+      this.fillLayer(i);
+    }
+  }
 
-    const images = Array.from({ length: layersAmount }, async (_, index): Promise<[HTMLImageElement, number]> => {
-      return [await this.loadEmoji(this.randomEmoji()), index];
-    });
+  async fillLayer(index: number) {
+    const blurRatio = 3;
+    const padding = (blurRatio * this.ratio * 3);
 
-    const layers: Layer[] = [];
+    const emoji = await this.loadEmoji(this.randomEmoji());
+    const blur = index < this.layersAmount / 2;
 
-    for await (let [emoji, index] of images) {
-      const blur = index < layersAmount / 2 ? 3 : 0;
-      const padding = (blur * this.ratio);
+    const canvas = document.createElement('canvas');
+    canvas.width = this.emojiSize + padding * 2;
+    canvas.height = this.emojiSize + padding * 2;
 
-      const canvas = document.createElement('canvas');
-      canvas.width = this.emojiSize + padding * 2;
-      canvas.height = this.emojiSize + padding * 2;
+    const ctx = canvas.getContext('2d');
 
-      const ctx = canvas.getContext('2d');
-
-      if (!ctx) {
-        throw new NullContextError();
-      }
-
-      ctx.drawImage(
-        emoji,
-        padding,
-        padding,
-        this.emojiSize - padding,
-        this.emojiSize - padding
-      );
-
-      if (blur) {
-        this.blur(canvas, blur);
-      }
-
-      const image = new Image();
-      image.src = canvas.toDataURL();
-
-      layers.push({
-        image,
-        scale: (index < layersAmount / 2 ? 0.5 : 1) + Math.random(),
-        top: Math.random() * this.height,
-        left: Math.random() * this.width,
-        rotate: 0,
-        transform: {
-          top: this.randomDirection(),
-          left: this.randomDirection(),
-          rotate: this.randomDirection() * Math.PI / 360,
-        },
-      });
+    if (!ctx) {
+      throw new NullContextError();
     }
 
-    return layers;
+    ctx.drawImage(
+      emoji,
+      padding,
+      padding,
+      this.emojiSize - padding,
+      this.emojiSize - padding
+    );
+
+    if (blur) {
+      this.blur(canvas, blurRatio);
+    }
+
+    const image = new Image();
+    image.src = canvas.toDataURL();
+
+    this.layers.push({
+      image,
+      scale: (index < this.layersAmount / 2 ? 0.5 : 1) + Math.random(),
+      top: Math.random() * this.height,
+      left: Math.random() * this.width,
+      rotate: 0,
+      transform: {
+        top: this.randomDirection(),
+        left: this.randomDirection(),
+        rotate: this.randomDirection() * Math.PI / 360,
+      },
+    });
   }
 
   transformLayer(layer: Layer) {
