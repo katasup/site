@@ -40,7 +40,7 @@ export class EmojiPad {
     this.width = container.clientWidth * this.ratio;
     this.height = container.clientHeight * this.ratio;
 
-    this.emojiSize = Math.min(this.height, this.width) / 10;
+    this.emojiSize = Math.max(window.innerHeight, window.innerWidth) / 10;
 
     const canvas = document.createElement('canvas');
 
