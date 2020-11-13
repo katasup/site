@@ -99,3 +99,15 @@ em {
   font-style: italic;
   color: #757575;
 }
+
+blockquote {
+  border-left: 2px solid #dd4a68;
+  padding-left: 1em;
+  margin: 0;
+  color: #757575;
+}
+
+img:not([class]) {
+  display: block;
+  max-width: 100%;
+}
