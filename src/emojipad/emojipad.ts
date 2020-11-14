@@ -132,15 +132,17 @@ export class EmojiPad {
 
   fillLayers() {
     for (let i = this.layersAmount; i > 0; i--) {
-      this.fillLayer(i);
+      this.fillLayer();
     }
   }
 
-  async fillLayer(index: number) {
+  async fillLayer() {
     const blurRatio = 3;
     const padding = (blurRatio * this.ratio * 3);
 
     const emoji = await this.loadEmoji(this.randomEmoji());
+
+    const index = this.layers.length;
     const blur = index < this.layersAmount / 2;
 
     const canvas = document.createElement('canvas');
