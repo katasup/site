@@ -172,7 +172,7 @@ export class EmojiPad {
 
     this.layers.push({
       image,
-      scale: (index < this.layersAmount / 2 ? 0.5 : 1) + Math.random(),
+      scale: (index < this.layersAmount / 2 ? 1.5 : 1) + Math.random(),
       top: Math.random() * this.height,
       left: Math.random() * this.width,
       rotate: 0,
