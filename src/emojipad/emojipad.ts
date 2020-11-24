@@ -1,5 +1,5 @@
 interface Layer {
-  image: HTMLImageElement;
+  image: ImageBitmap;
   scale: number;
   top: number;
   left: number;
@@ -20,40 +20,28 @@ class NullContextError extends Error {
 export class EmojiPad {
   static emojis = ['1f0cf', '1f30d', '1f31d', '1f336-fe0f', '1f346', '1f34a', '1f34b', '1f34c', '1f351', '1f355', '1f369', '1f36a', '1f37f', '1f389', '1f3b2', '1f3b7', '1f3b8', '1f3c2', '1f3c6', '1f419', '1f42d', '1f437', '1f438', '1f44c', '1f47b', '1f47d', '1f47e', '1f480', '1f48e', '1f4a3', '1f4a9', '1f4ce', '1f4e3', '1f52a', '1f52b', '1f600', '1f602', '1f606', '1f607', '1f609', '1f60d', '1f610', '1f618', '1f61b', '1f621', '1f626', '1f628', '1f62c', '1f62d', '1f62e', '1f631', '1f633', '1f634', '1f636', '1f637', '1f644', '1f680', '1f6b2', '1f6f8', '1f6f9', '1f6fc', '1f911', '1f912', '1f913', '1f914', '1f916', '1f91f', '1f921', '1f923', '1f924', '1f929', '1f92a', '1f92b', '1f92c', '1f92e', '1f92f', '1f951', '1f955', '1f95e', '1f965', '1f96b', '1f970', '1f972', '1f973', '1f975', '1f976', '1f980', '1f981', '1f984', '1f98a', '1f98b', '1f9c0', '1f9c1', '1f9da', '1f9dc-200d-2640-fe0f', '1f9e0', '1fa82', '1fa99', '1fab2', '1fad2', '263a-fe0f', '2693', '270c-fe0f'];
 
-  layersAmount: number;
   layers: Layer[] = [];
   usedIndexes: number[] = [];
+  emojiSize: number;
 
   width: number;
   height: number;
-  ratio: number;
-  emojiSize: number;
 
-  ctx: CanvasRenderingContext2D;
+  ctx: OffscreenCanvasRenderingContext2D;
 
-  private resizeTimer?: number;
+  private resizeTimer?: ReturnType<typeof setTimeout>;
 
-  constructor(public container: HTMLElement) {
-    this.ratio = window.devicePixelRatio || 1;
-    const mobileDevice = window.innerWidth < 768;
+  constructor(
+      public canvas: OffscreenCanvas,
+      width: number,
+      height: number,
+      public ratio: number,
+      public layersAmount = 99
+    ) {
+    this.width = width * ratio;
+    this.height = height * ratio;
 
-    this.width = container.clientWidth * this.ratio;
-    this.height = container.clientHeight * this.ratio;
-
-    this.layersAmount = mobileDevice ? 49 : 99;
-    this.emojiSize = Math.max(window.innerHeight, window.innerWidth) / (mobileDevice ? 5 : 10);
-
-    const canvas = document.createElement('canvas');
-
-    canvas.style.position = 'absolute';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = container.clientWidth + 'px';
-    canvas.style.height = container.clientHeight + 'px';
-    canvas.width = this.width;
-    canvas.height = this.height;
-
-    container.prepend(canvas);
+    this.emojiSize = Math.max(width, height) / 6;
 
     const ctx = canvas.getContext('2d');
 
@@ -68,17 +56,15 @@ export class EmojiPad {
     this.render();
   }
 
-  handleResize = () => {
-    window.clearTimeout(this.resizeTimer);
+  handleResize = (width: number, height: number) => {
+    clearTimeout(this.resizeTimer!);
 
-    this.resizeTimer = window.setTimeout(() => {
-      this.width = this.container.clientWidth * this.ratio;
-      this.height = this.container.clientHeight * this.ratio;
+    this.resizeTimer = setTimeout(() => {
+      this.width = width * this.ratio;
+      this.height = height * this.ratio;
 
-      this.ctx.canvas.style.width = this.container.clientWidth + 'px';
-      this.ctx.canvas.style.height = this.container.clientHeight + 'px';
-      this.ctx.canvas.width = this.width;
-      this.ctx.canvas.height = this.height;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
     }, 500);
   }
 
@@ -104,7 +90,7 @@ export class EmojiPad {
     return dir;
   }
 
-  blur(canvas: HTMLCanvasElement, ratio: number) {
+  blur(canvas: OffscreenCanvas, ratio: number) {
     const ctx = canvas.getContext('2d');
 
     if (!ctx) {
@@ -123,12 +109,11 @@ export class EmojiPad {
     ctx.globalAlpha = 1;
   }
 
-  loadEmoji(emoji: string): Promise<HTMLImageElement> {
-    return new Promise(resolve => {
-      const image = new Image(this.emojiSize, this.emojiSize);
-      image.onload = () => resolve(image);
-      image.src = `/assets/emoji/${emoji}.png`;
-    });
+  async loadEmoji(emoji: string): Promise<ImageBitmap> {
+    const blob = await fetch(`/assets/emoji/${emoji}.png`).then(r => r.blob());
+    const img = await createImageBitmap(blob);
+
+    return img;
   }
 
   fillLayers() {
@@ -146,10 +131,7 @@ export class EmojiPad {
     const index = this.layers.length;
     const blur = index < this.layersAmount / 2;
 
-    const canvas = document.createElement('canvas');
-    canvas.width = this.emojiSize + padding * 2;
-    canvas.height = this.emojiSize + padding * 2;
-
+    const canvas = new OffscreenCanvas(this.emojiSize + padding * 2, this.emojiSize + padding * 2);
     const ctx = canvas.getContext('2d');
 
     if (!ctx) {
@@ -168,8 +150,7 @@ export class EmojiPad {
       this.blur(canvas, blurRatio);
     }
 
-    const image = new Image();
-    image.src = canvas.toDataURL();
+    const image = canvas.transferToImageBitmap()
 
     this.layers.push({
       image,

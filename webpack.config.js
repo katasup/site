@@ -13,6 +13,10 @@ const common = {
   mode: NODE_ENV,
   entry: {
     main: path.resolve(__dirname, 'src/main.ts'),
+    worker: {
+      import: './src/emojipad/worker.ts',
+      filename: 'scripts/worker.js',
+    },
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -24,8 +28,20 @@ const common = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        loader: 'ts-loader'
+        test: /\.ts$/,
+        use: {
+          loader: 'ts-loader',
+          options: { configFile: path.resolve(__dirname, 'tsconfig.json') }
+        },
+      },
+      {
+        test: /\.worker\.ts$/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: { configFile: path.resolve(__dirname, 'src/emojipad/tsconfig.json') }
+          },
+        ],
       },
       {
         test: /\.(scss|css)$/,
@@ -43,11 +59,13 @@ const common = {
     new HtmlWebpackPlugin({
       template: '!!ejs-webpack-loader!src/templates/index.ejs',
       filename: 'index.html',
+      excludeChunks: ['worker'],
     }),
     new HtmlWebpackPlugin({
       publicPath: '/',
       template: '!!ejs-webpack-loader!src/templates/article.ejs',
       filename: 'article.html',
+      excludeChunks: ['worker'],
     }),
     new CopyWebpackPlugin({
       patterns: [
