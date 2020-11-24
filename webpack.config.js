@@ -42,21 +42,21 @@ const common = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: 'src/templates/index.html',
+      template: '!!ejs-webpack-loader!src/templates/index.ejs',
       filename: 'index.html',
       chunks: ['main'],
 
     }),
     new HtmlWebpackPlugin({
       publicPath: '/',
-      template: 'src/templates/article.html',
+      template: '!!ejs-webpack-loader!src/templates/article.ejs',
       filename: 'article.html',
       chunks: ['article'],
     }),
     new CopyWebpackPlugin({
       patterns: [
         {
-          from:  path.resolve(__dirname, 'public'),
+          from: path.resolve(__dirname, 'public'),
           to: 'assets',
           globOptions: {
             ignore: ['*.DS_Store'],
