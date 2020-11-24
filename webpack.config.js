@@ -13,14 +13,13 @@ const common = {
   mode: NODE_ENV,
   entry: {
     main: path.resolve(__dirname, 'src/main.ts'),
-    article: path.resolve(__dirname, 'src/article.ts'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'scripts/[name].[contenthash].js'
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.js']
   },
   module: {
     rules: [
@@ -44,14 +43,11 @@ const common = {
     new HtmlWebpackPlugin({
       template: '!!ejs-webpack-loader!src/templates/index.ejs',
       filename: 'index.html',
-      chunks: ['main'],
-
     }),
     new HtmlWebpackPlugin({
       publicPath: '/',
       template: '!!ejs-webpack-loader!src/templates/article.ejs',
       filename: 'article.html',
-      chunks: ['article'],
     }),
     new CopyWebpackPlugin({
       patterns: [

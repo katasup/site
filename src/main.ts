@@ -1,6 +1,7 @@
 import { EmojiPad } from './emojipad/emojipad';
 
 import './styles/landing.scss';
+import './styles/article.scss';
 
 document.addEventListener('readystatechange', () => {
   if (document.readyState === 'complete') {
@@ -9,7 +10,7 @@ document.addEventListener('readystatechange', () => {
 });
 
 function init() {
-  const landing = document.querySelector<HTMLElement>('.landing');
+  const landing = document.querySelector<HTMLElement>('.emojipad');
 
   if (!landing) {
     return;
