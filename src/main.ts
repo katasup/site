@@ -1,4 +1,4 @@
-import { EmojiPad } from './emojipad/emojipad';
+import { emojipad } from './emojipad/emojipad';
 
 import './styles/landing.scss';
 import './styles/article.scss';
@@ -16,7 +16,5 @@ function init() {
     return;
   }
 
-  const emojipad = new EmojiPad(landing);
-
-  window.addEventListener('resize', emojipad.handleResize);
+  emojipad(landing);
 }
